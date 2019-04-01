@@ -4,7 +4,9 @@ import com.habib.api.CustomException.EmployeeException;
 import com.habib.api.domains.APIResult;
 import com.habib.api.domains.Employee;
 import com.habib.api.domains.ListValue;
+import com.habib.api.domains.User;
 import com.habib.api.repository.EmployeeRepository;
+import com.habib.api.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class EmployeeRestController {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeRestController.class);
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<List<Employee>> listAllValues() {
@@ -56,4 +61,20 @@ public class EmployeeRestController {
         }
     }
 
+    @RequestMapping(value = "/getLoginUser", method = RequestMethod.POST)
+    public ResponseEntity<?> getLoginUser(@RequestBody User user) {
+        try{
+
+           User user1= userRepository.findByUsernameAndPassword(user.getUsername(),user.getPassword());
+           if(user1!=null)
+               return ResponseEntity.ok(user1);
+           else
+               return ResponseEntity.ok(user1);
+               //return new ResponseEntity(new APIResult("Invalid User"),HttpStatus.NOT_FOUND);
+        }
+        catch (Exception ex)
+        {
+            return new ResponseEntity(new APIResult(ex.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

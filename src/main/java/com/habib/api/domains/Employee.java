@@ -1,10 +1,12 @@
 package com.habib.api.domains;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -31,6 +33,17 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
 
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date startdate;
+
+    @Column(name="phone")
+    private String phone;
+
+    @Column(name="email")
+    private String email;
+
+    @Column(name="hourrate")
+    private Double hourRate;
 
 }
