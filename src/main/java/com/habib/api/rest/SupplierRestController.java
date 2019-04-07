@@ -2,6 +2,7 @@ package com.habib.api.rest;
 
 import com.habib.api.CustomException.EmployeeException;
 import com.habib.api.domains.APIResult;
+import com.habib.api.domains.ApiResponse;
 import com.habib.api.domains.Employee;
 import com.habib.api.domains.Supplier;
 import com.habib.api.repository.SupplierRepository;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class SupplierRestController {
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<List<Supplier>> listAllValues() {
         try {
-            List<Supplier> list = supplierRepository.findAll();
+            List<Supplier> list = supplierRepository.findAllByOrderBySuppliernameAsc();
             if (list.isEmpty()) {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
                 // You many decide to return HttpStatus.NOT_FOUND
@@ -57,18 +59,21 @@ public class SupplierRestController {
     }
 
     @RequestMapping(value = "/delete/", method = RequestMethod.POST)
-    public ResponseEntity<?> deleteSupplier(@RequestBody Supplier supplier, UriComponentsBuilder ucBuilder) {
+    public ApiResponse<?> deleteSupplier(@RequestBody Supplier supplier, UriComponentsBuilder ucBuilder) {
         logger.info("delete : {}", supplier);
         try{
             supplierRepository.delete(supplier);
             //HttpHeaders headers = new HttpHeaders();
             //headers.setLocation(ucBuilder.path("/supplier/findById/{id}").buildAndExpand(supplier.getSupplierid()).toUri());
             // return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-            return ResponseEntity.ok(supplier);
+            return new ApiResponse<>(HttpStatus.OK.value(), "supplier deleted successfully.", supplier);
+           // return ResponseEntity.ok(supplier);
         }
         catch (Exception ex)
         {
-            return new ResponseEntity(new APIResult(ex.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ApiResponse<>(HttpStatus.FAILED_DEPENDENCY.value(), ex.getMessage(), null);
+            //return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("supplier used");
+            //return new ResponseEntity(new APIResult(ex.getMessage()),HttpStatus.EXPECTATION_FAILED);
         }
     }
 }

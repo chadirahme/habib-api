@@ -1,2 +1,20 @@
 /opt/tomcat/habib-api/ROOT/WEB-INF/classes
 
+
+ select sum(amount)
+--  paymentdate
+from payment
+-- group by paymentdate
+
+
+ALTER TABLE payment
+ADD CONSTRAINT `fk_supplierid`
+FOREIGN KEY (`supplierid`) REFERENCES `supplier`(`supplierid`)
+ON DELETE RESTRICT;
+
+search query by Enum
+https://www.petrikainulainen.net/programming/spring-framework/spring-data-jpa-tutorial-three-custom-queries-with-query-methods/
+
+ssh root@139.162.169.243
+
+&serverTimezone=UTC

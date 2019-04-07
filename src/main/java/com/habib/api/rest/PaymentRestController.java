@@ -2,8 +2,9 @@ package com.habib.api.rest;
 
 import com.habib.api.CustomException.EmployeeException;
 import com.habib.api.domains.APIResult;
+import com.habib.api.domains.ApiResponse;
 import com.habib.api.domains.Payment;
-import com.habib.api.domains.Supplier;
+import com.habib.api.repository.PaymentsStatistics;
 import com.habib.api.repository.PaymnetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -55,5 +57,29 @@ public class PaymentRestController {
         {
             return new ResponseEntity(new APIResult(ex.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @RequestMapping(value = "/delete/", method = RequestMethod.POST)
+    public ApiResponse<?> deleteSupplier(@RequestBody Payment payment, UriComponentsBuilder ucBuilder) {
+        logger.info("delete : {}", payment);
+        try{
+            paymnetRepository.delete(payment);
+            return new ApiResponse<>(HttpStatus.OK.value(), "Payment deleted successfully.", payment);
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<>(HttpStatus.FAILED_DEPENDENCY.value(), ex.getMessage(), null);
+        }
+    }
+
+    @RequestMapping(value = "/allyear", method = RequestMethod.GET)
+    public ResponseEntity<HashMap<Integer,List<PaymentsStatistics>>> findAllPaymentsByYear()
+    {
+      //List<PaymentsStatistics> list=paymnetRepository.findAllPaymentsByYear(2017);
+        HashMap<Integer,List<PaymentsStatistics> > hashMap=new HashMap<>();
+        hashMap.put(2017,paymnetRepository.findAllPaymentsByYear(2017));
+        hashMap.put(2018,paymnetRepository.findAllPaymentsByYear(2018));
+        return new ResponseEntity<HashMap<Integer,List<PaymentsStatistics> >>(hashMap, HttpStatus.OK);
+
     }
 }
