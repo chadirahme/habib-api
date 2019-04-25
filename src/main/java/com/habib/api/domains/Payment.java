@@ -38,4 +38,13 @@ public class Payment {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="userid", nullable=false)
     private User user;
+
+    @Transient
+    private Long supplierid;
+
+    @Column(name="filepath")
+    private String filepath;
+
+    @Column(name="filename")
+    private String filename;
 }

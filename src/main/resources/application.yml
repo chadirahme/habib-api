@@ -16,6 +16,6 @@ spring:
       max-request-size: 10MB
 
 upload:
-  path: /Users/chadirahme/IdeaProjects/americanacademy/ProfilePictureStore
+  path: /Users/chadirahme/IdeaProjects/habib-api/suppliers
 
   #multipart.max-file-size=100MB
